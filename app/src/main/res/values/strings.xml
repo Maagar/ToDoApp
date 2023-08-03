@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ToDoApp</string>
     <string name="top_bar_title">Tasks</string>
+    <string name="sort">sort</string>
+    <string name="your_lists">your lists</string>
+    <string name="manage">manage</string>
 </resources>

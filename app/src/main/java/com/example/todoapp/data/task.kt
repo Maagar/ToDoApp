@@ -12,6 +12,6 @@ data class Task(
     val details: String,
     val star: Boolean,
     val completed: Boolean,
-    val listPlace: Int
+    val listPlace: Int,
 
 )
