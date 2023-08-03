@@ -4,4 +4,6 @@
     <string name="sort">sort</string>
     <string name="your_lists">your lists</string>
     <string name="manage">manage</string>
+    <string name="add_new_task_list">add new task list</string>
+    <string name="new_list">New list</string>
 </resources>

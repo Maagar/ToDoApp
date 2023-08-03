@@ -28,7 +28,7 @@ fun Task(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
 
