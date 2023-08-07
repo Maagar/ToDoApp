@@ -19,11 +19,9 @@ interface taskListDao {
     @Update
     suspend fun updateTaskList(taskList: TaskList)
 
-    @Query("SELECT * FROM TaskList ORDER BY name ASC")
+    @Query("SELECT * FROM TaskList ORDER BY creation_date ASC")
     fun readAllTaskListData(): LiveData<List<TaskList>>
 
     @Query("SELECT * FROM TaskList WHERE id = :id")
     fun getTaskList(id: Int): Flow<TaskList?>
-    @Query("SELECT MAX(listPlace) FROM TaskList WHERE id = :id")
-    fun getLastPlace(id: Int): Int
 }

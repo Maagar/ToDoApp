@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(modifier: Modifier = Modifier) {
+fun AppScreen(modifier: Modifier = Modifier, showDialog: MutableState<Boolean>) {
     val colors = MaterialTheme.colorScheme
     val topBarColor = colors.background
     val bottomBarColor = colors.tertiary
@@ -107,16 +108,8 @@ fun AppScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(paddingValues = it)
             ) {
-                TaskListBar()
+                TaskListBar(showDialog = showDialog)
                 Task(text = "Test")
-                var showDialog by remember { mutableStateOf(false) }
-                TextButton(onClick = { showDialog = true }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                    Text(text = stringResource(R.string.new_list))
-                }
-                if (showDialog) {
-                    Text(text = "test")
-                }
             }
         }
     }
