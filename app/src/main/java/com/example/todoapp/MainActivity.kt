@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val showDialog = rememberSaveable { mutableStateOf(false) }
             ToDoAppTheme {
-                AppScreen(showDialog = showDialog)
+                AppScreen(showDialog = showDialog, viewModel = viewModel)
                 FullScreenDialog(showDialog, viewModel)
             }
 
