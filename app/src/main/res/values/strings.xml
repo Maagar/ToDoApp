@@ -6,9 +6,8 @@
     <string name="manage">manage</string>
     <string name="add_new_task_list">add new task list</string>
     <string name="new_list">New list</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dialog_close">stop adding a new list</string>
     <string name="create_new_list">Create new list</string>
     <string name="done">done</string>
+    <string name="my_tasks">My tasks</string>
 </resources>

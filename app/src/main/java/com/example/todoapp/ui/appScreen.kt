@@ -37,14 +37,18 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppScreen(modifier: Modifier = Modifier, showDialog: MutableState<Boolean>, viewModel: TaskListViewModel) {
+fun AppScreen(
+    modifier: Modifier = Modifier,
+    showDialog: MutableState<Boolean>,
+    viewModel: TaskListViewModel,
+    currentList: MutableState<Int>
+) {
     val colors = MaterialTheme.colorScheme
     val topBarColor = colors.background
     val bottomBarColor = colors.tertiary
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(topBarColor)
     systemUiController.setNavigationBarColor(bottomBarColor)
-    val currentList = remember { mutableStateOf(0) }
     val listShowDialog = remember { mutableStateOf(false) }
     val sortShowDialog = remember { mutableStateOf(false) }
     val settingsShowDialog = remember { mutableStateOf(false) }

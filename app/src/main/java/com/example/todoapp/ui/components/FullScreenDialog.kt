@@ -23,6 +23,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,11 +38,14 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.todoapp.R
 import com.example.todoapp.data.TaskList
 import com.example.todoapp.data.TaskListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewModel) {
+fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewModel, currentList: MutableState<Int>) {
     var text by rememberSaveable { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
     if(showDialog.value) {
         val focusRequester = remember { FocusRequester() }
         Dialog(
@@ -78,8 +82,9 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewM
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         TextButton(onClick = {
-                            addNewList(text, showDialog, viewModel)
+                            addNewList(text, showDialog, viewModel, currentList, coroutineScope)
                             text = ""
+
                         }) {
                             Text(text = stringResource(R.string.done))
                         }
@@ -106,7 +111,20 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewM
     }
 }
 
-fun addNewList(text: String, showDialog: MutableState<Boolean>, viewModel: TaskListViewModel) {
+fun addNewList(
+    text: String,
+    showDialog: MutableState<Boolean>,
+    viewModel: TaskListViewModel,
+    currentList: MutableState<Int>,
+    coroutineScope: CoroutineScope
+) {
     viewModel.addTaskList(TaskList(name = text))
     showDialog.value = !showDialog.value
+
+    coroutineScope.launch {
+        val latestTaskList = viewModel.fetchLatestTaskList()
+        if(latestTaskList != null) {
+            currentList.value = latestTaskList.id
+        }
+    }
 }

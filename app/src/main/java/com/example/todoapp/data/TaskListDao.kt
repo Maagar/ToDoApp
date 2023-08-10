@@ -9,7 +9,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface taskListDao {
+interface TaskListDao {
     @Insert
     suspend fun insertTaskList(taskList: TaskList)
 
@@ -18,6 +18,8 @@ interface taskListDao {
 
     @Update
     suspend fun updateTaskList(taskList: TaskList)
+    @Query("SELECT * FROM TaskList ORDER BY creation_date DESC LIMIT 1")
+    suspend fun getLatestTaskList(): TaskList?
 
     @Query("SELECT * FROM TaskList ORDER BY creation_date ASC")
     fun readAllTaskListData(): LiveData<List<TaskList>>
