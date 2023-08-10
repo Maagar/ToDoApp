@@ -43,7 +43,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewModel, currentList: MutableState<Int>) {
+fun FullScreenDialog(
+    showDialog: MutableState<Boolean>,
+    viewModel: TaskListViewModel,
+    currentList: MutableState<Int>,
+    title: MutableState<String>,
+    name: String = ""
+    ) {
     var text by rememberSaveable { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     if(showDialog.value) {
@@ -51,7 +57,7 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewM
         Dialog(
             onDismissRequest = {
                 showDialog.value = !showDialog.value
-                text = ""
+                text = name
                                },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false
@@ -76,7 +82,7 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, viewModel: TaskListViewM
                             )
                         }
                         Text(
-                            text = stringResource(R.string.create_new_list),
+                            text = title.value,
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(top = 8.dp, start = 6.dp)
                         )

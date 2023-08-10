@@ -31,4 +31,7 @@ class TaskListViewModel(
     suspend fun fetchLatestTaskList(): TaskList? {
         return repository.getLatestTaskList()
     }
+    suspend fun fetchTaskList(id: Int): TaskList {
+        return repository.getTaskList(id)
+    }
 }

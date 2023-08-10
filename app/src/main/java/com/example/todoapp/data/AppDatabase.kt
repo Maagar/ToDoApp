@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [Task::class, TaskList::class], version = 2, exportSchema = false)
+@Database(entities = [Task::class, TaskList::class], version = 3, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
-    abstract fun taskDao(): taskDao
+    abstract fun taskDao(): TaskDao
     abstract fun taskListDao(): TaskListDao
     companion object {
         @Volatile

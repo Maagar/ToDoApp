@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.todoapp"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.todoapp"
         minSdk = 27
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -69,14 +69,14 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
+    implementation("androidx.compose.foundation:foundation-layout:1.5.0")
+    implementation("androidx.compose.material:material:1.5.0")
     val roomVersion = "2.5.2"
 
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    implementation("androidx.compose.material:material-icons-core:1.4.3")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 

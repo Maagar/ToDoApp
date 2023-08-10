@@ -1,8 +1,10 @@
 package com.example.todoapp.ui.components
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
@@ -28,13 +30,15 @@ import com.example.todoapp.data.TaskListViewModel
 
 @Composable
 fun TaskListBar(
-    modifier: Modifier = Modifier,
     showDialog: MutableState<Boolean>,
     viewModel: TaskListViewModel,
-    currentList: MutableState<Int>
+    currentList: MutableState<Int>,
+    title: MutableState<String>,
+    modifier: Modifier = Modifier
     ) {
     var taskLists by remember { mutableStateOf(emptyList<TaskList>()) }
-    
+    val listState = rememberLazyListState()
+    val tempTitle = stringResource(R.string.create_new_list)
     LaunchedEffect(viewModel.readAllData) {
         viewModel.readAllData().observeForever {newTaskList ->
             taskLists = newTaskList
@@ -57,7 +61,10 @@ fun TaskListBar(
             }
         }
         item {
-            TextButton(onClick = { showDialog.value = !showDialog.value }) {
+            TextButton(onClick = {
+                showDialog.value = !showDialog.value
+                title.value = tempTitle
+            }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null, Modifier.size(18.dp))
                 Text(text = stringResource(R.string.new_list))
             }

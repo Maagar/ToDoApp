@@ -25,5 +25,5 @@ interface TaskListDao {
     fun readAllTaskListData(): LiveData<List<TaskList>>
 
     @Query("SELECT * FROM TaskList WHERE id = :id")
-    fun getTaskList(id: Int): Flow<TaskList?>
+    fun getTaskList(id: Int): TaskList
 }
