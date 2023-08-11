@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.example.todoapp.data.AppDatabase
 import com.example.todoapp.data.TaskListRepository
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         setContent {
+            val scope = rememberCoroutineScope()
             val currentList = remember { mutableStateOf(0) }
             val showDialog = rememberSaveable { mutableStateOf(false) }
             val title = rememberSaveable { mutableStateOf("") }
@@ -40,7 +42,8 @@ class MainActivity : ComponentActivity() {
             ToDoAppTheme {
                 AppScreen(showDialog, viewModel, currentList, sheetState, showListBottomSheet,
                     showSortBottomSheet, showSettingsBottomSheet, title)
-                BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet, showSettingsBottomSheet, viewModel, currentList)
+                BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet,
+                    showSettingsBottomSheet, viewModel, currentList, scope)
             }
         }
     }

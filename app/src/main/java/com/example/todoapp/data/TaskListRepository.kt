@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 
 class TaskListRepository(private val taskListDao: TaskListDao, private val ioDispatcher: CoroutineDispatcher) {
     val readAllData: LiveData<List<TaskList>> = taskListDao.readAllTaskListData()
+
     suspend fun getLatestTaskList(): TaskList? {
         return withContext(ioDispatcher) {
             taskListDao.getLatestTaskList()
@@ -18,5 +19,8 @@ class TaskListRepository(private val taskListDao: TaskListDao, private val ioDis
         return withContext(ioDispatcher) {
             taskListDao.getTaskList(id)
         }
+    }
+    suspend fun updateTaskList(taskList: TaskList) {
+        taskListDao.updateTaskList(taskList)
     }
 }

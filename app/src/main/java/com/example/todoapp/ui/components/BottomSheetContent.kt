@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
 import com.example.todoapp.data.TaskListViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -30,47 +31,51 @@ fun BottomSheet(
     showSortBottomSheet: MutableState<Boolean>,
     showSettingsBottomSheet: MutableState<Boolean>,
     viewModel: TaskListViewModel,
-    currentList: MutableState<Int>
+    currentList: MutableState<Int>,
+    scope: CoroutineScope
 ){
-    val scope = rememberCoroutineScope()
+    val showDialog = remember { mutableStateOf(false) }
+    val title = remember { mutableStateOf("") }
+    FullScreenDialog(showDialog, viewModel, currentList, title, isChanging = true)
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetBackgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
         sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         sheetContent = {
-            val showDialog = remember { mutableStateOf(false) }
-            val title = remember { mutableStateOf("") }
-            FullScreenDialog(showDialog, viewModel, currentList, title)
             if (showListBottomSheet.value) {
             }
             else if (showSortBottomSheet.value) {
             }
             else if (showSettingsBottomSheet.value) {
-                SettingsBottomSheet(showDialog, title, viewModel, currentList, scope)
+                SettingsBottomSheet(showDialog, title, sheetState, scope, showSettingsBottomSheet)
             }
         }) {
 
         }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingsBottomSheet(
     showDialog: MutableState<Boolean>,
     title: MutableState<String>,
-    viewModel: TaskListViewModel,
-    currentList: MutableState<Int>,
-    scope: CoroutineScope
-) {
+    sheetState: ModalBottomSheetState,
+    scope: CoroutineScope,
+    settingsDialog: MutableState<Boolean>
+    ) {
     title.value = stringResource(R.string.rename_list_title)
-    val name = remember{ mutableStateOf("") }
-
-    FullScreenDialog(showDialog, viewModel, currentList, title, isChanging = true)
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        TextButton(onClick = { showDialog.value = !showDialog.value }) {
+        TextButton(onClick = {
+            showDialog.value = !showDialog.value
+            scope.launch {
+                sheetState.hide()
+                settingsDialog.value = !settingsDialog.value
+            }
+        }) {
             Text(text = stringResource(R.string.rename_list))
         }
     }

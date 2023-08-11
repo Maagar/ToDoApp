@@ -14,7 +14,6 @@ class TaskListViewModel(
     private val ioDispatcher: CoroutineDispatcher
 ): AndroidViewModel(application) {
     val readAllData: LiveData<List<TaskList>>
-
     init {
         val taskListDao = AppDatabase.getDatabase(application).taskListDao()
         readAllData = repository.readAllData
@@ -33,5 +32,10 @@ class TaskListViewModel(
     }
     suspend fun fetchTaskList(id: Int): TaskList? {
         return repository.getTaskList(id)
+    }
+    fun updateTaskList(taskList: TaskList) {
+        viewModelScope.launch {
+            repository.updateTaskList(taskList)
+        }
     }
 }
