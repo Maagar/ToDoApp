@@ -38,4 +38,9 @@ class TaskListViewModel(
             repository.updateTaskList(taskList)
         }
     }
+    fun deleteTaskList(taskList: TaskList) {
+        viewModelScope.launch {
+            repository.deleteTaskList(taskList)
+        }
+    }
 }

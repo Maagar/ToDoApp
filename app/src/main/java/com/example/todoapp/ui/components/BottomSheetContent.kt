@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
 import com.example.todoapp.data.TaskListViewModel
@@ -38,6 +39,7 @@ fun BottomSheet(
     val title = remember { mutableStateOf("") }
     FullScreenDialog(showDialog, viewModel, currentList, title, isChanging = true)
     ModalBottomSheetLayout(
+        sheetGesturesEnabled = false,
         sheetState = sheetState,
         sheetBackgroundColor = MaterialTheme.colorScheme.inverseOnSurface,
         sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
@@ -47,9 +49,11 @@ fun BottomSheet(
             else if (showSortBottomSheet.value) {
             }
             else if (showSettingsBottomSheet.value) {
-                SettingsBottomSheet(showDialog, title, sheetState, scope, showSettingsBottomSheet)
+                SettingsBottomSheet(showDialog, title, sheetState, scope,
+                    showSettingsBottomSheet, viewModel, currentList)
             }
-        }) {
+        }
+    ) {
 
         }
 }
@@ -61,7 +65,9 @@ fun SettingsBottomSheet(
     title: MutableState<String>,
     sheetState: ModalBottomSheetState,
     scope: CoroutineScope,
-    settingsDialog: MutableState<Boolean>
+    settingsDialog: MutableState<Boolean>,
+    viewModel: TaskListViewModel,
+    currentList: MutableState<Int>
     ) {
     title.value = stringResource(R.string.rename_list_title)
     Column(
@@ -69,14 +75,36 @@ fun SettingsBottomSheet(
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        TextButton(onClick = {
-            showDialog.value = !showDialog.value
-            scope.launch {
-                sheetState.hide()
-                settingsDialog.value = !settingsDialog.value
-            }
-        }) {
-            Text(text = stringResource(R.string.rename_list))
-        }
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                showDialog.value = !showDialog.value
+                scope.launch {
+                    sheetState.hide()
+                    settingsDialog.value = !settingsDialog.value
+                }
+            }) {
+            Text(
+                text = stringResource(R.string.rename_list),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) }
+        TextButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                scope.launch {
+                    sheetState.hide()
+                    settingsDialog.value = !settingsDialog.value
+                    val taskListToDelete = viewModel.fetchTaskList(currentList.value)
+                    if (taskListToDelete != null) {
+                        viewModel.deleteTaskList(taskListToDelete)
+                    }
+                }
+            }) {
+            Text(
+                text = stringResource(R.string.delete_list),
+                textAlign = TextAlign.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) }
     }
 }

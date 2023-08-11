@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,13 @@ class MainActivity : ComponentActivity() {
             val showListBottomSheet = remember { mutableStateOf(false) }
             val showSortBottomSheet = remember { mutableStateOf(false) }
             val showSettingsBottomSheet = remember { mutableStateOf(false) }
+            if (sheetState.currentValue != ModalBottomSheetValue.Hidden) {
+                DisposableEffect(Unit) {
+                    onDispose {
+                        showSettingsBottomSheet.value = false
+                    }
+                }
+            }
             ToDoAppTheme {
                 AppScreen(showDialog, viewModel, currentList, sheetState, showListBottomSheet,
                     showSortBottomSheet, showSettingsBottomSheet, title)

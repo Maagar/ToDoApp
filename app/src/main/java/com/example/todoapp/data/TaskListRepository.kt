@@ -23,4 +23,7 @@ class TaskListRepository(private val taskListDao: TaskListDao, private val ioDis
     suspend fun updateTaskList(taskList: TaskList) {
         taskListDao.updateTaskList(taskList)
     }
+    suspend fun deleteTaskList(taskList: TaskList) {
+        taskListDao.deleteTaskList(taskList)
+    }
 }
