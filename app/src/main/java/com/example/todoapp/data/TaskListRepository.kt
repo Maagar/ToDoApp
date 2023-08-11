@@ -14,7 +14,7 @@ class TaskListRepository(private val taskListDao: TaskListDao, private val ioDis
     suspend fun addTaskList(taskList: TaskList) {
         taskListDao.insertTaskList(taskList)
     }
-    suspend fun getTaskList(id: Int): TaskList {
+    suspend fun getTaskList(id: Int): TaskList? {
         return withContext(ioDispatcher) {
             taskListDao.getTaskList(id)
         }

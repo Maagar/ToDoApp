@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +16,6 @@ import com.example.todoapp.data.TaskListViewModel
 import com.example.todoapp.data.TaskListViewModelFactory
 import com.example.todoapp.ui.AppScreen
 import com.example.todoapp.ui.components.BottomSheet
-import com.example.todoapp.ui.components.FullScreenDialog
 import com.example.todoapp.ui.theme.ToDoAppTheme
 import kotlinx.coroutines.Dispatchers
 
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
             ToDoAppTheme {
                 AppScreen(showDialog, viewModel, currentList, sheetState, showListBottomSheet,
                     showSortBottomSheet, showSettingsBottomSheet, title)
-                BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet, showSettingsBottomSheet, title, viewModel, currentList)
+                BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet, showSettingsBottomSheet, viewModel, currentList)
             }
         }
     }

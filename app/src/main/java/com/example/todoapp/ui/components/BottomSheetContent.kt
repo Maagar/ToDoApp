@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,10 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
-import com.example.todoapp.data.TaskList
 import com.example.todoapp.data.TaskListViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -32,7 +29,6 @@ fun BottomSheet(
     showListBottomSheet: MutableState<Boolean>,
     showSortBottomSheet: MutableState<Boolean>,
     showSettingsBottomSheet: MutableState<Boolean>,
-    title: MutableState<String>,
     viewModel: TaskListViewModel,
     currentList: MutableState<Int>
 ){
@@ -43,6 +39,7 @@ fun BottomSheet(
         sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         sheetContent = {
             val showDialog = remember { mutableStateOf(false) }
+            val title = remember { mutableStateOf("") }
             FullScreenDialog(showDialog, viewModel, currentList, title)
             if (showListBottomSheet.value) {
             }
@@ -64,27 +61,16 @@ fun SettingsBottomSheet(
     currentList: MutableState<Int>,
     scope: CoroutineScope
 ) {
-    val tempTitle = stringResource(R.string.rename_list_title)
-    var tempTaskList: TaskList = TaskList(name = "")
-    LaunchedEffect(Unit) {
-        scope.launch {
-            tempTaskList = viewModel.fetchTaskList(currentList.value)
-        }
-    }
-    val name = tempTaskList.name
-    LaunchedEffect(Unit) {
-        viewModel.fetchTaskList(currentList.value)
-    }
-    FullScreenDialog(showDialog, viewModel, currentList, title, name = name)
+    title.value = stringResource(R.string.rename_list_title)
+    val name = remember{ mutableStateOf("") }
+
+    FullScreenDialog(showDialog, viewModel, currentList, title, isChanging = true)
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        TextButton(onClick = {
-            title.value = tempTitle
-            showDialog.value = !showDialog.value
-        }) {
+        TextButton(onClick = { showDialog.value = !showDialog.value }) {
             Text(text = stringResource(R.string.rename_list))
         }
     }

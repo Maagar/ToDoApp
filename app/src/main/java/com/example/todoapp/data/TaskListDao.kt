@@ -6,7 +6,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskListDao {
@@ -25,5 +24,5 @@ interface TaskListDao {
     fun readAllTaskListData(): LiveData<List<TaskList>>
 
     @Query("SELECT * FROM TaskList WHERE id = :id")
-    fun getTaskList(id: Int): TaskList
+    suspend fun getTaskList(id: Int): TaskList?
 }

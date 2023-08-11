@@ -20,18 +20,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -48,16 +46,19 @@ fun FullScreenDialog(
     viewModel: TaskListViewModel,
     currentList: MutableState<Int>,
     title: MutableState<String>,
-    name: String = ""
+    isChanging: Boolean = false
     ) {
-    var text by rememberSaveable { mutableStateOf("") }
+    val text = remember { mutableStateOf(TextFieldValue("")) }
     val coroutineScope = rememberCoroutineScope()
+    if (isChanging) {
+        getCurrentListName(coroutineScope, viewModel, currentList, text)
+    }
     if(showDialog.value) {
         val focusRequester = remember { FocusRequester() }
         Dialog(
             onDismissRequest = {
                 showDialog.value = !showDialog.value
-                text = name
+                text.value = TextFieldValue("")
                                },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false
@@ -74,7 +75,7 @@ fun FullScreenDialog(
                     ) {
                         IconButton(onClick = {
                             showDialog.value = !showDialog.value
-                            text = ""
+                            text.value = TextFieldValue("")
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
@@ -89,7 +90,7 @@ fun FullScreenDialog(
                         Spacer(modifier = Modifier.weight(1f))
                         TextButton(onClick = {
                             addNewList(text, showDialog, viewModel, currentList, coroutineScope)
-                            text = ""
+                            text.value = TextFieldValue("")
 
                         }) {
                             Text(text = stringResource(R.string.done))
@@ -97,9 +98,9 @@ fun FullScreenDialog(
                     }
                     Divider()
                     TextField(
-                        value = text,
-                        onValueChange = { text = it },
-                        placeholder = { Text(text = "Enter list title") },
+                        value = text.value,
+                        onValueChange = { text.value = it },
+                        placeholder = { Text(text = stringResource(R.string.list_name_placeholder)) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
@@ -118,19 +119,29 @@ fun FullScreenDialog(
 }
 
 fun addNewList(
-    text: String,
+    text: MutableState<TextFieldValue>,
     showDialog: MutableState<Boolean>,
     viewModel: TaskListViewModel,
     currentList: MutableState<Int>,
     coroutineScope: CoroutineScope
 ) {
-    viewModel.addTaskList(TaskList(name = text))
+    viewModel.addTaskList(TaskList(name = text.value.text))
     showDialog.value = !showDialog.value
 
     coroutineScope.launch {
         val latestTaskList = viewModel.fetchLatestTaskList()
         if(latestTaskList != null) {
             currentList.value = latestTaskList.id
+        }
+    }
+}
+
+fun getCurrentListName(scope: CoroutineScope, viewModel: TaskListViewModel,
+                       currentList: MutableState<Int>, text: MutableState<TextFieldValue>) {
+    scope.launch {
+        val currentTaskList = viewModel.fetchTaskList(currentList.value)
+        if (currentTaskList != null) {
+            text.value = TextFieldValue(currentTaskList.name)
         }
     }
 }
