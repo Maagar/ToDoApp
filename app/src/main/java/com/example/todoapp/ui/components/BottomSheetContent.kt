@@ -69,6 +69,9 @@ fun SettingsBottomSheet(
     viewModel: TaskListViewModel,
     currentList: MutableState<Int>
     ) {
+    if (!sheetState.isVisible) {
+        settingsDialog.value = false
+    }
     title.value = stringResource(R.string.rename_list_title)
     Column(
         modifier = Modifier
@@ -89,8 +92,11 @@ fun SettingsBottomSheet(
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth()
             ) }
+        val enabled = remember { mutableStateOf(false) }
+        enabled.value = currentList.value != 1
         TextButton(
             modifier = Modifier.fillMaxWidth(),
+            enabled = enabled.value,
             onClick = {
                 scope.launch {
                     sheetState.hide()
@@ -98,6 +104,7 @@ fun SettingsBottomSheet(
                     val taskListToDelete = viewModel.fetchTaskList(currentList.value)
                     if (taskListToDelete != null) {
                         viewModel.deleteTaskList(taskListToDelete)
+                        currentList.value = 1
                     }
                 }
             }) {

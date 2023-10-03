@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.icons.Icons
@@ -24,8 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
 import com.example.todoapp.data.TaskListViewModel
+import com.example.todoapp.data.TaskViewModel
 import com.example.todoapp.ui.components.FullScreenDialog
 import com.example.todoapp.ui.components.TaskListBar
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -45,7 +43,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppScreen(
     showDialog: MutableState<Boolean>,
-    viewModel: TaskListViewModel,
+    taskListViewModel: TaskListViewModel,
+    taskViewModel: TaskViewModel,
     currentList: MutableState<Int>,
     sheetState: ModalBottomSheetState,
     showListBottomSheet: MutableState<Boolean>,
@@ -78,12 +77,13 @@ fun AppScreen(
                 )
             },
             content = {
-                FullScreenDialog(showDialog, viewModel, currentList, title)
+                FullScreenDialog(showDialog, taskListViewModel, currentList, title)
                 Column(
                     modifier = Modifier
                         .padding(paddingValues = it)
                 ) {
-                    TaskListBar(showDialog, viewModel, currentList, title)
+                    TaskListBar(showDialog, taskListViewModel, currentList, title)
+
                 }
             },
             bottomBar = {
@@ -104,11 +104,11 @@ fun AppScreen(
                             )
                         }
                         if (currentList.value != 0) {
-                            IconButton(onClick = {
-                                showSettingsBottomSheet.value = !showSettingsBottomSheet.value
-                                scope.launch {
-                                    sheetState.show()
-                                }
+                                        IconButton(onClick = {
+                                            showSettingsBottomSheet.value = !showSettingsBottomSheet.value
+                                            scope.launch {
+                                                sheetState.show()
+                                            }
                             }) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(R.drawable.baseline_more_horiz_24),

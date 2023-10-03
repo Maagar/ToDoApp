@@ -17,3 +17,16 @@ class TaskListViewModelFactory(
         throw IllegalArgumentException("Unknown viewModel class")
     }
 }
+
+class TaskViewModelFactory(
+    private val application: Application,
+    private val repository: TaskRepository,
+    private val ioDispatcher: CoroutineDispatcher
+):ViewModelProvider.AndroidViewModelFactory(application) {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if(modelClass.isAssignableFrom(TaskViewModel::class.java)) {
+            return TaskViewModel(application, repository, ioDispatcher) as T
+        }
+        throw IllegalArgumentException("Unknown viewModel class")
+    }
+}

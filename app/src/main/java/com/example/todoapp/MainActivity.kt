@@ -16,6 +16,9 @@ import com.example.todoapp.data.AppDatabase
 import com.example.todoapp.data.TaskListRepository
 import com.example.todoapp.data.TaskListViewModel
 import com.example.todoapp.data.TaskListViewModelFactory
+import com.example.todoapp.data.TaskRepository
+import com.example.todoapp.data.TaskViewModel
+import com.example.todoapp.data.TaskViewModelFactory
 import com.example.todoapp.ui.AppScreen
 import com.example.todoapp.ui.components.BottomSheet
 import com.example.todoapp.ui.theme.ToDoAppTheme
@@ -24,9 +27,13 @@ import kotlinx.coroutines.Dispatchers
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        val repository = TaskListRepository(AppDatabase.getDatabase(applicationContext).taskListDao(), Dispatchers.IO)
-        val viewModel by viewModels<TaskListViewModel>() {
-            TaskListViewModelFactory(application, repository, Dispatchers.IO)
+        val taskListRepository = TaskListRepository(AppDatabase.getDatabase(applicationContext).taskListDao(), Dispatchers.IO)
+        val taskRepository = TaskRepository(AppDatabase.getDatabase(applicationContext).taskDao(), Dispatchers.IO)
+        val taskListViewModel by viewModels<TaskListViewModel>() {
+            TaskListViewModelFactory(application, taskListRepository, Dispatchers.IO)
+        }
+        val taskViewModel by viewModels<TaskViewModel>() {
+            TaskViewModelFactory(application, taskRepository, Dispatchers.IO)
         }
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,10 +55,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
             ToDoAppTheme {
-                AppScreen(showDialog, viewModel, currentList, sheetState, showListBottomSheet,
+                AppScreen(showDialog, taskListViewModel, taskViewModel, currentList, sheetState, showListBottomSheet,
                     showSortBottomSheet, showSettingsBottomSheet, title)
                 BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet,
-                    showSettingsBottomSheet, viewModel, currentList, scope)
+                    showSettingsBottomSheet, taskListViewModel, currentList, scope)
             }
         }
     }

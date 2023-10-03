@@ -151,7 +151,7 @@ fun addNewList(
     coroutineScope.launch {
         val latestTaskList = viewModel.fetchLatestTaskList()
         if(latestTaskList != null) {
-            currentList.value = latestTaskList.id
+            currentList.value = latestTaskList.id + 1
         }
     }
 }
