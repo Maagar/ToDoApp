@@ -1,28 +1,20 @@
 package com.example.todoapp.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.todoapp.R
 import com.example.todoapp.data.TaskListViewModel
+import com.example.todoapp.data.TaskViewModel
+import com.example.todoapp.ui.components.BottomSheets.AddNewTaskSheet
+import com.example.todoapp.ui.components.BottomSheets.SettingsBottomSheet
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -31,13 +23,15 @@ fun BottomSheet(
     showListBottomSheet: MutableState<Boolean>,
     showSortBottomSheet: MutableState<Boolean>,
     showSettingsBottomSheet: MutableState<Boolean>,
-    viewModel: TaskListViewModel,
+    showAddNewTaskSheet: MutableState<Boolean>,
+    taskListViewModel: TaskListViewModel,
+    taskViewModel: TaskViewModel,
     currentList: MutableState<Int>,
     scope: CoroutineScope
 ){
     val showDialog = remember { mutableStateOf(false) }
     val title = remember { mutableStateOf("") }
-    FullScreenDialog(showDialog, viewModel, currentList, title, isChanging = true)
+    FullScreenDialog(showDialog, taskListViewModel, currentList, title, isChanging = true)
     ModalBottomSheetLayout(
         sheetGesturesEnabled = false,
         sheetState = sheetState,
@@ -50,68 +44,19 @@ fun BottomSheet(
             }
             else if (showSettingsBottomSheet.value) {
                 SettingsBottomSheet(showDialog, title, sheetState, scope,
-                    showSettingsBottomSheet, viewModel, currentList)
+                    showSettingsBottomSheet, taskListViewModel, currentList)
+            }
+            else if (showAddNewTaskSheet.value) {
+                AddNewTaskSheet(
+                    sheetState = sheetState,
+                    scope = scope,
+                    isAddingNewTask = showAddNewTaskSheet,
+                    viewModel = taskViewModel,
+                    currentList = currentList
+                )
             }
         }
     ) {
 
         }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SettingsBottomSheet(
-    showDialog: MutableState<Boolean>,
-    title: MutableState<String>,
-    sheetState: ModalBottomSheetState,
-    scope: CoroutineScope,
-    settingsDialog: MutableState<Boolean>,
-    viewModel: TaskListViewModel,
-    currentList: MutableState<Int>
-    ) {
-    if (!sheetState.isVisible) {
-        settingsDialog.value = false
-    }
-    title.value = stringResource(R.string.rename_list_title)
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-    ) {
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                showDialog.value = !showDialog.value
-                scope.launch {
-                    sheetState.hide()
-                    settingsDialog.value = !settingsDialog.value
-                }
-            }) {
-            Text(
-                text = stringResource(R.string.rename_list),
-                textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) }
-        val enabled = remember { mutableStateOf(false) }
-        enabled.value = currentList.value != 1
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled.value,
-            onClick = {
-                scope.launch {
-                    sheetState.hide()
-                    settingsDialog.value = !settingsDialog.value
-                    val taskListToDelete = viewModel.fetchTaskList(currentList.value)
-                    if (taskListToDelete != null) {
-                        viewModel.deleteTaskList(taskListToDelete)
-                        currentList.value = 1
-                    }
-                }
-            }) {
-            Text(
-                text = stringResource(R.string.delete_list),
-                textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) }
-    }
 }

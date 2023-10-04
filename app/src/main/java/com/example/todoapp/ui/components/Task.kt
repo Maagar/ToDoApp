@@ -19,11 +19,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
+import com.example.todoapp.data.Task
 
 @Composable
 fun Task(
     modifier: Modifier = Modifier,
-    text: String
+    task: Task
 ) {
     Row(
         modifier = modifier
@@ -39,7 +40,7 @@ fun Task(
         )
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = text,
+            text = task.taskText,
             maxLines = 5,
             overflow = TextOverflow.Ellipsis
         )
@@ -48,7 +49,7 @@ fun Task(
             onClick = { /*TODO*/ },
         ) {
             Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.star_fill0_wght400_grad0_opsz48),
+                imageVector = ImageVector.vectorResource(id = R.drawable.baseline_star_border_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(24.dp)

@@ -14,5 +14,9 @@
     <string name="rename_list_title">Rename list</string>
     <string name="list_name_placeholder">Enter list title</string>
     <string name="delete_list">Delete list</string>
+    <string name="new_task">New task</string>
+    <string name="star_this_task">Star this task</string>
+    <string name="unstar_this_task">unstar this task</string>
+    <string name="add_details">Add details</string>
 
 </resources>

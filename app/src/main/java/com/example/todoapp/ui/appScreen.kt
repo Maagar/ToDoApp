@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,7 +52,8 @@ fun AppScreen(
     showListBottomSheet: MutableState<Boolean>,
     showSortBottomSheet: MutableState<Boolean>,
     showSettingsBottomSheet: MutableState<Boolean>,
-    title: MutableState<String>
+    title: MutableState<String>,
+    addingNewTask: MutableState<Boolean>
 ) {
     val colors = MaterialTheme.colorScheme
     val topBarColor = colors.background
@@ -120,7 +123,12 @@ fun AppScreen(
                         Spacer(modifier = Modifier.weight(1f))
                         FloatingActionButton(
                             containerColor = MaterialTheme.colorScheme.tertiary,
-                            onClick = { /*TODO*/ }
+                            onClick = {
+                                addingNewTask.value = !addingNewTask.value
+                                scope.launch {
+                                    sheetState.show()
+                                }
+                            }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,

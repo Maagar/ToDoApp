@@ -1,6 +1,7 @@
 package com.example.todoapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
             val showListBottomSheet = remember { mutableStateOf(false) }
             val showSortBottomSheet = remember { mutableStateOf(false) }
             val showSettingsBottomSheet = remember { mutableStateOf(false) }
+            val showAddNewTaskSheet = remember { mutableStateOf(false) }
             if (sheetState.currentValue != ModalBottomSheetValue.Hidden) {
                 DisposableEffect(Unit) {
                     onDispose {
@@ -55,10 +57,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
             ToDoAppTheme {
-                AppScreen(showDialog, taskListViewModel, taskViewModel, currentList, sheetState, showListBottomSheet,
-                    showSortBottomSheet, showSettingsBottomSheet, title)
+                AppScreen(showDialog, taskListViewModel, taskViewModel, currentList, sheetState,
+                    showListBottomSheet, showSortBottomSheet, showSettingsBottomSheet, title,
+                    showAddNewTaskSheet)
                 BottomSheet(sheetState, showListBottomSheet, showSortBottomSheet,
-                    showSettingsBottomSheet, taskListViewModel, currentList, scope)
+                    showSettingsBottomSheet, showAddNewTaskSheet, taskListViewModel, taskViewModel,
+                    currentList, scope)
             }
         }
     }

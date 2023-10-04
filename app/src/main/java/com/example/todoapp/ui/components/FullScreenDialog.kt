@@ -97,7 +97,9 @@ fun FullScreenDialog(
                             modifier = Modifier.padding(top = 8.dp, start = 6.dp)
                         )
                         Spacer(modifier = Modifier.weight(1f))
-                        TextButton(onClick = {
+                        TextButton(
+                            enabled = (text.value.text != ""),
+                            onClick = {
                             if (isChanging) {
                                 changeTaskListName(coroutineScope, viewModel, currentList, name = text.value.text)
                             }
